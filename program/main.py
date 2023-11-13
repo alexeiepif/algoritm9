@@ -10,7 +10,8 @@ import timeit
 from scipy.optimize import curve_fit
 
 
-def find(a, b, len_mass):
+def find(a, b):
+    len_mass = len(a)
     for i in range(len_mass):
         if b == a[i]:
             return i
@@ -66,46 +67,34 @@ def create_graph(b, c, namegraph, bool_l):
     plt.ylabel("Время работы функции")
 
 
-if __name__ == '__main__':
-    for namegraph in ["Средний", "Худший"]:
-        x = [i for i in range(10, 10001, 10)]
-        time_linear = []
-        time_binary = []
-        time_binary_py = []
-        randmax = 1000000
-        for i in x:
-            a = [rnd.randint(1, randmax) for j in range(i)]
-            if namegraph == "Средний":
-                b = a[rnd.randint(1, len(a)-1)]
-            else:
-                b = randmax+1
-
-            timer_l = (timeit.timeit(lambda: find(a, b, i), number=50))/50
-            time_linear.append(timer_l)
-
+def func_time(x, model, case, case_name):
+    time = []
+    switch = True
+    randmax = 1000000
+    for i in x:
+        a = [rnd.randint(1, randmax) for j in range(i)]
+        if model != find:
             a.sort()
-            timer_bin = (timeit.timeit(lambda: bin_search(a, b), number=50))/50
-            time_binary.append(timer_bin)
+            switch = False
+        if case == "Средний":
+            b = a[rnd.randint(0, len(a)-1)]
+        else:
+            b = randmax+1
+        timer = (timeit.timeit(lambda: model(a, b), number=50))/50
+        time.append(timer)
 
-            timer_bin_py = (timeit.timeit(
-                lambda: bisect.bisect_left(a, b), number=50))/50
-            time_binary_py.append(timer_bin_py)
+    plt.figure(case + case_name)
+    plt.subplots_adjust(left=0.2)
+    # Создание графиков
+    create_graph(x, time, case, switch)
 
-        # Создание графических окон
-        plt.figure(namegraph + " линейный поиск")
-        plt.subplots_adjust(left=0.2)
 
-        # Создание графиков
-        create_graph(x, time_linear, namegraph, True)
+if __name__ == '__main__':
+    x = [i for i in range(10, 5001, 10)]
+    for namegraph in ["Средний", "Худший"]:
+        func_time(x, find, namegraph, " линейный поиск")
+        func_time(x, bin_search, namegraph, " бинарный поиск")
+        func_time(x, bisect.bisect_left, namegraph, " bisect поиск")
 
-        plt.figure(namegraph + " бинарный поиск")
-        plt.subplots_adjust(left=0.2)
-
-        create_graph(x, time_binary, namegraph, False)
-
-        plt.figure(namegraph + " python бин. поиск")
-        plt.subplots_adjust(left=0.2)
-
-        create_graph(x, time_binary_py, namegraph, False)
     # Показ графиков
     plt.show()
