@@ -74,7 +74,6 @@ if __name__ == '__main__':
         time_binary_py = []
         randmax = 1000000
         for i in x:
-            rnd.seed(i)
             a = [rnd.randint(1, randmax) for j in range(i)]
             if namegraph == "Средний":
                 b = a[rnd.randint(1, len(a)-1)]
