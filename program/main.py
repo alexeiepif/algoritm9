@@ -67,7 +67,7 @@ def create_graph(b, c, namegraph, bool_l):
     plt.ylabel("Время работы функции")
 
 
-def func_time(x, model, case, case_name):
+def func_time(x, model, case, case_name, size):
     time = []
     switch = True
     randmax = 1000000
@@ -83,7 +83,7 @@ def func_time(x, model, case, case_name):
         timer = (timeit.timeit(lambda: model(a, b), number=50))/50
         time.append(timer)
 
-    plt.figure(case + case_name)
+    plt.figure(case + case_name, size)
     plt.subplots_adjust(left=0.2)
     # Создание графиков
     create_graph(x, time, case, switch)
@@ -91,10 +91,15 @@ def func_time(x, model, case, case_name):
 
 if __name__ == '__main__':
     x = [i for i in range(10, 5001, 10)]
+    # Настройка размера окон
+    dpi = 100
+    width_inches = (1680 / dpi) / 4
+    height_inches = (850 / dpi) / 2
+    size=(width_inches, height_inches)
     for namegraph in ["Средний", "Худший"]:
-        func_time(x, find, namegraph, " линейный поиск")
-        func_time(x, bin_search, namegraph, " бинарный поиск")
-        func_time(x, bisect.bisect_left, namegraph, " bisect поиск")
+        func_time(x, find, namegraph, " линейный поиск", size)
+        func_time(x, bin_search, namegraph, " бинарный поиск", size)
+        func_time(x, bisect.bisect_left, namegraph, " bisect поиск", size)
 
     # Показ графиков
     plt.show()
