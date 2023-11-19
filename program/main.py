@@ -44,7 +44,8 @@ def find_coeffs_line(xs, ys):
 
 
 def find_coeffs_bin(x, time):
-    params, covariance = curve_fit(log_n, np.array(x), np.array(time))
+    params, covariance = curve_fit(log_n, np.array(x), 
+                                   np.array(time))
     a, b = params
     return a, b
 
@@ -80,7 +81,8 @@ def func_time(x, model, case, case_name, size):
             b = a[rnd.randint(0, len(a)-1)]
         else:
             b = randmax+1
-        timer = (timeit.timeit(lambda: model(a, b), number=50))/50
+        timer = (timeit.timeit(lambda: model(a, b), 
+                               number=50))/50
         time.append(timer)
 
     plt.figure(case + case_name, size)
@@ -95,11 +97,14 @@ if __name__ == '__main__':
     dpi = 100
     width_inches = (1680 / dpi) / 4
     height_inches = (850 / dpi) / 2
-    size=(width_inches, height_inches)
+    size = (width_inches, height_inches)
     for namegraph in ["Средний", "Худший"]:
-        func_time(x, find, namegraph, " линейный поиск", size)
-        func_time(x, bin_search, namegraph, " бинарный поиск", size)
-        func_time(x, bisect.bisect_left, namegraph, " bisect поиск", size)
+        func_time(x, find, namegraph, 
+                  " линейный поиск", size)
+        func_time(x, bin_search, namegraph, 
+                  " бинарный поиск", size)
+        func_time(x, bisect.bisect_left, namegraph, 
+                  " bisect поиск", size)
 
     # Показ графиков
     plt.show()
